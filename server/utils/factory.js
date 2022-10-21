@@ -25,14 +25,14 @@ const deleteOne = (Model) =>
     });
   });
 
-const updateOne = (Model) => {
-  asyncCatch(async (req, res, next) => {
+const updateOne = (Model) => 
+   asyncCatch(async (req, res, next) => {
     const id = req.params.id;
     let updated = await Model.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
     });
 
-    if (!updated) return next(new GlobalError("Invalid Id: UPDATE", 500));
+    if (!updated) next(new GlobalError("Invalid Id: UPDATE", 500));
     res.status(200).json({
       success: true,
       data: {
@@ -40,15 +40,20 @@ const updateOne = (Model) => {
       },
     });
   });
-};
+
+
+//   if (!newProduct) return next(new GlobalError("Cannot create new product", 500));
+//   res.status(201).json({
+//     success: true,
+//     data: {
+//       product: newProduct,
+//     },
+//   });
 
 const createNew = (Model) => {
-  asyncCatch(async (req, res, next) => {
+  return asyncCatch(async (req, res, next) => {
     const created = await Model.create(req.body);
-    if (!created)
-      next(
-        new GlobalError(`Cannot create new ${Model.constructor.modelName}`, 500)
-      );
+    if (!created) next(new GlobalError(`Cannot create new ${Model.constructor.modelName}`, 500));
     res.status(200).json({
       success: true,
       data: {
