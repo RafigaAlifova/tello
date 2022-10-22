@@ -14,8 +14,6 @@ class GlobalFilter {
 
   filter() {
     const tempQuery = { ...this.queryStr };
-    const insufficient = ["page", "sort", "limit", "fileds", "search"];
-    insufficient.forEach((q) => delete tempQuery[q]);
     const tempQueryStr = JSON.stringify(tempQuery);
     const resQueryStr = tempQueryStr.replace(
       /\b(lt|gt|gte|lte)\b/g,

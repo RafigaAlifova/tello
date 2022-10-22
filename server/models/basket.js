@@ -4,7 +4,7 @@ const basketSchema = mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: [true, "User id must be provided!"],
+      // required: [true, "User id must be provided!"],
     },
 
     products: [

@@ -19,8 +19,9 @@ exports.signUp = asyncCatch(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   });
-  if (!newUser)
+  if (!newUser) {
     return next(new GlobalError("Cannot create a new user account!"));
+  }
   const token = signJWT(newUser._id);
 
   res.status(201).json({ success: true, data: { user: newUser, token } });
@@ -29,15 +30,15 @@ exports.signUp = asyncCatch(async (req, res, next) => {
 exports.login = asyncCatch(async (req, res, next) => {
   //! Check if email and password are inserted
   const { email, password } = req.body;
-  if (!(email && password))
+  if (!(email && password)) {
     return next(new GlobalError("Please insert email and password!"));
-
+  }
   //! Check if email and password are correct
   const user = await User.findOne({ email }).select("+password");
   const isCorrect = await user.checkPassword(password, user.password);
-  if (!(user && isCorrect))
+  if (!(user && isCorrect)) {
     return next(new GlobalError("Email or password is incorrect!"));
-
+  }
   //! Sign JWT
   const token = signJWT(user._id);
   res.json({ success: true, data: { token, user: user } });
@@ -45,8 +46,9 @@ exports.login = asyncCatch(async (req, res, next) => {
 
 exports.forgetPassword = asyncCatch(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-  if (!user)
+  if (!user) {
     return next(new GlobalError("User with this email doesn't exist!", 400));
+  }
   try {
     const passwordToken = await user.generatePassToken();
     await user.save({ validateBeforeSave: false });
@@ -72,16 +74,19 @@ exports.resetPassword = asyncCatch(async (req, res, next) => {
   const token = await req.params.token;
   const user = await User.findById(userId);
 
-  if (!user) return next(new GlobalError("This user not be found!", 401));
+  if (!user) {
+    return next(new GlobalError("This user not be found!", 401));
+  }
 
   if (!user.forgetPassword || Date.parse(user.resetExpires) < Date.now())
     return next(new GlobalError("Token is ivalid or expired!"));
 
   const isOkay = await bcrypt.compare(token, user.forgetPassword);
-  if (!isOkay)
+  if (!isOkay) {
     return next(
       new GlobalError("This token for resetting password isn't correct!", 401)
     );
+  }
 
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
@@ -105,21 +110,22 @@ exports.changePassword = asyncCatch(async (req, res, next) => {
     !req.body.currentPassword ||
     !req.body.newPassword ||
     !req.body.passwordConfirm
-  )
+  ) {
     return next(
       new GlobalError(
         "old password is incorrect or new password wasn't entered!",
         403
       )
     );
+  }
   const isPasswordCorrect = await user.checkPassword(
     req.body.currentPassword,
     user.password
   );
 
-  if (!isPasswordCorrect)
+  if (!isPasswordCorrect) {
     return next(new GlobalError("Incorrect old password!", 403));
-
+  }
   user.password = req.body.newPassword;
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();

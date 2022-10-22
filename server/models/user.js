@@ -68,7 +68,7 @@ userSchema.methods.checkPassword = async function (
   realPassword,
   cryptedPassword
 ) {
-  return await bcrypt.compare(realPassword, cryptedPassword);
+  return bcrypt.compare(realPassword, cryptedPassword);
 };
 
 userSchema.methods.generatePassToken = async function () {

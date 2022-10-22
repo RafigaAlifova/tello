@@ -16,16 +16,16 @@ function sendProdError(err, req, res) {
   } else {
     res.json({
       success: false,
-      message: "Ops, something went wrong",
+      message: "Something went wrong...",
     });
   }
 }
 
-function handleDublicateError(err) {
+function handleDublicateError() {
   return new GlobalError("This value must be unique!", 400);
 }
 
-function handleCastError(err) {
+function handleCastError() {
   return new GlobalError("Id must be ObjectId type!", 400);
 }
 
@@ -34,15 +34,15 @@ function handleValidationError(err) {
   return new GlobalError(allErr, 400);
 }
 
-function handleTokenExpire(err) {
+function handleTokenExpire() {
   return new GlobalError("Session time out. Please log in again", 403);
 }
 
-function handleTokenError(err) {
+function handleTokenError() {
   return new GlobalError("Invalid Token", 403);
 }
 
-module.exports = (err, req, res, next) => {
+module.exports = (err, req, res) => {
   const statusCode = err.statusCode || 500;
   if (process.env.NODE_ENV == "development") {
     sendDevError(err, req, res);

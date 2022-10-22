@@ -17,10 +17,8 @@ mongoose.connect(DB, (err) => {
       await Product.create(products);
       console.log("Data was imported");
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
-
-    process.exit();
   }
 
   async function deleteData() {
@@ -28,10 +26,8 @@ mongoose.connect(DB, (err) => {
       await Product.deleteMany();
       console.log("Data was deleted");
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
-
-    process.exit();
   }
 
   switch (process.argv[2]) {

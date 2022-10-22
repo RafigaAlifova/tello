@@ -54,7 +54,7 @@ reviewSchema.post("save", function (doc) {
   doc.constructor.calcRatingsAverage(this.product);
 });
 
-reviewSchema.post(/^findOneAnd/, async function (doc) {
+reviewSchema.post(/^findOneAnd/, function (doc) {
   doc.constructor.calcRatingsAverage(doc.product);
 });
 
