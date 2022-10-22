@@ -13,12 +13,17 @@ function signJWT(id) {
 }
 
 exports.signUp = asyncCatch(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-  });
+  if (req.body.password === req.body.passwordConfirm) {
+    const newUser = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      //passwordConfirm: req.body.passwordConfirm,
+    });
+  } else {
+    return next(new GlobalError("Confirm password is not same password!"));
+  }
+
   if (!newUser) {
     return next(new GlobalError("Cannot create a new user account!"));
   }
@@ -87,11 +92,14 @@ exports.resetPassword = asyncCatch(async (req, res, next) => {
       new GlobalError("This token for resetting password isn't correct!", 401)
     );
   }
-
-  user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
-  user.resetExpires = undefined;
-  user.forgetPassword = undefined;
+  if (req.body.password === req.body.passwordConfirm) {
+    user.password = req.body.password;
+    //user.passwordConfirm = req.body.passwordConfirm;
+    user.resetExpires = undefined;
+    user.forgetPassword = undefined;
+  } else {
+    return next(new GlobalError("Confirm password is not same password!"));
+  }
 
   await user.save();
 
@@ -126,8 +134,11 @@ exports.changePassword = asyncCatch(async (req, res, next) => {
   if (!isPasswordCorrect) {
     return next(new GlobalError("Incorrect old password!", 403));
   }
+  if (!req.body.password === req.body.passwordConfirm) {
+    return next(new GlobalError("Confirm password is not same password!"));
+  }
   user.password = req.body.newPassword;
-  user.passwordConfirm = req.body.passwordConfirm;
+ // user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
 
   const token = signJWT(user._id);
