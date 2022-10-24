@@ -12,7 +12,7 @@ const createNew = (Model) =>
     res.status(200).json({
       success: true,
       data: {
-        [Model.constructor.modelName]: created,
+        [Model.modelName]: created,
       },
     });
   });

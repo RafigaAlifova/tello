@@ -28,6 +28,7 @@ mongoose.connect(DB, (err) => {
     } catch (error) {
       throw new Error(error);
     }
+    process.exit();
   }
 
   switch (process.argv[2]) {

@@ -13,12 +13,9 @@ const basketSchema = mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "product",
         },
-        variants: [
-          {
-            name: String,
-            value: String,
-          },
-        ],
+        variant: {
+          type: Object,
+        },
         price: Number,
         quantity: Number,
         photo: String,

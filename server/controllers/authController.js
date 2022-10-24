@@ -46,7 +46,7 @@ exports.login = asyncCatch(async (req, res, next) => {
   }
   //! Sign JWT
   const token = signJWT(user._id);
-  res.json({ success: true, data: { token, user: user } });
+  res.status(201).json({ success: true, data: { token, user: user } });
 });
 
 exports.forgetPassword = asyncCatch(async (req, res, next) => {
@@ -68,7 +68,7 @@ exports.forgetPassword = asyncCatch(async (req, res, next) => {
       message: path,
     });
 
-    res.json({ success: true, message: "Email was sent!" });
+    res.status(201).json({ success: true, message: "Email was sent!" });
   } catch (error) {
     return next(new GlobalError("Cannot sent link to reset password!", 401));
   }
@@ -134,11 +134,11 @@ exports.changePassword = asyncCatch(async (req, res, next) => {
   if (!isPasswordCorrect) {
     return next(new GlobalError("Incorrect old password!", 403));
   }
-  if (!req.body.password === req.body.passwordConfirm) {
+  if (!req.body.newPassword === req.body.passwordConfirm) {
     return next(new GlobalError("Confirm password is not same password!"));
   }
   user.password = req.body.newPassword;
- // user.passwordConfirm = req.body.passwordConfirm;
+  // user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
 
   const token = signJWT(user._id);

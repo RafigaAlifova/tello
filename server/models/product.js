@@ -16,7 +16,7 @@ const productSchema = mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "category",
-        required: [true, "Category id must be defined!"],
+    //    required: [true, "Category id must be defined!"],
       },
     ],
 

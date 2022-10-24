@@ -5,24 +5,10 @@ const { privateRoute, access } = require("../middlewares/privateRoute");
 
 router.get("/", productController.getAllProducts);
 router.get("/:id", productController.getProductById);
-router.post(
-  "/",
-  privateRoute,
-  access("admin"),
-  productController.createProduct
-);
-router.patch(
-  "/:id",
-  privateRoute,
-  access("admin"),
-  productController.updateProduct
-);
-router.delete(
-  "/:id",
-  privateRoute,
-  access("admin"),
-  productController.deleteProduct
-);
 router.get("/:productId/reviews");
 
+router.use(privateRoute, access("admin"));
+router.post("/", productController.createProduct);
+router.patch("/:id", productController.updateProduct);
+router.delete("/:id", productController.deleteProduct);
 module.exports = router;
